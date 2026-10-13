@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Piket Kelas XII TKJ C</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            bg: '#0a0f1d',
+                            card: '#111827',
+                            border: '#1f293d',
+                            primary: '#06b6d4', // cyan-500
+                            secondary: '#3b82f6', // blue-500
+                            accent: '#10b981', // emerald-500
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070b14;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+
+        .glass-card {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card-today {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+
+        .animate-glow {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between text-slate-100 custom-scrollbar">
+
+    <header class="w-full border-b border-slate-800/80 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wide bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                        XII TKJ C
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">Sistem Jadwal Piket Digital</p>
+                </div>
+            </div>
+
+            <!-- Time & Day Widget -->
+            <div class="flex items-center gap-3 bg-slate-900/90 border border-slate-800 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium">
+                <div class="flex items-center text-cyan-400 gap-1.5">
+                    <i class="fa-regular fa-calendar-check text-cyan-400"></i>
+                    <span id="current-date-text">Senin, 1 Jan 2026</span>
+                </div>
+                <span class="text-slate-600">|</span>
+                <div class="flex items-center text-slate-300 gap-1.5">
+                    <i class="fa-regular fa-clock text-slate-400"></i>
+                    <span id="current-time-text" class="font-mono text-cyan-300">00:00:00 WIB</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow space-y-6">
+
+        <!-- Today Banner -->
+        <section id="today-banner" class="glass-card-today rounded-2xl p-5 sm:p-6 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                        PETUGAS PIKET HARI INI
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                        <span id="today-name-display" class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Hari Ini</span>
+                    </h2>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">
+                        "Bersama menjaga kelas kita tetap bersih, rapi, dan nyaman untuk belajar!"
+                    </p>
+                </div>
+
+                <div class="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 flex items-center gap-4 min-w-[200px]">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400">Progres Piket Hari Ini</div>
+                            <div id="today-progress-text" class="text-sm font-bold text-slate-100">0/0 Selesai (0%)</div>
+                        </div>
+                    </div>
+                    <button onclick="resetTodayTasks()" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-semibold transition border border-slate-700 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Reset Progress
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls Section: Tabs & Search -->
+        <section class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <!-- Day Tabs Filter -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 custom-scrollbar scrollbar-none">
+                <button onclick="filterDay('ALL')" id="tab-ALL" class="day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20">
+                    <i class="fa-solid fa-border-all mr-1"></i> Semua Hari
+                </button>
+                <button onclick="filterDay('SENIN')" id="tab-SENIN" class="day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800">
+                    Senin
+                </button>
+                <button onclick="filterDay('SELASA')" id="tab-SELASA" class="day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800">
+                    Selasa
+                </button>
+                <button onclick="filterDay('RABU')" id="tab-RABU" class="day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800">
+                    Rabu
+                </button>
+                <button onclick="filterDay('KAMIS')" id="tab-KAMIS" class="day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800">
+                    Kamis
+                </button>
+                <button onclick="filterDay('JUMAT')" id="tab-JUMAT" class="day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800">
+                    Jumat
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-72">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari nama anggota piket..." 
+                    class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+            </div>
+        </section>
+
+        <!-- Schedule Cards Grid -->
+        <section id="schedule-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Dynamic JavaScript Render Target -->
+        </section>
+
+        <!-- Standard Duty Checklist Details -->
+        <section class="glass-card rounded-2xl p-5 sm:p-6 border border-slate-800/80 mt-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm">
+                    <i class="fa-solid fa-broom"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white">SOP & Checklist Tugas Piket Kelas</h3>
+                    <p class="text-xs text-slate-400">Pastikan tugas-tugas berikut diselesaikan setiap harinya</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-full bg-slate-800 text-cyan-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                    <div class="text-xs">
+                        <div class="font-semibold text-slate-200 mb-0.5">Kebersihan Lantai</div>
+                        <div class="text-slate-400">Menyapu dan mengepel seluruh area ruang kelas.</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-full bg-slate-800 text-cyan-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                    <div class="text-xs">
+                        <div class="font-semibold text-slate-200 mb-0.5">Papan Tulis & Spidol</div>
+                        <div class="text-slate-400">Menghapus papan tulis hingga bersih & merapikan spidol.</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-full bg-slate-800 text-cyan-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                    <div class="text-xs">
+                        <div class="font-semibold text-slate-200 mb-0.5">Meja, Kursi & Sampah</div>
+                        <div class="text-slate-400">Merapikan barisan meja-kursi & membuang sampah ke luar.</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-full bg-slate-800 text-cyan-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+                    <div class="text-xs">
+                        <div class="font-semibold text-slate-200 mb-0.5">Kelistrikan & AC</div>
+                        <div class="text-slate-400">Mematikan AC, Lampu, Proyektor sebelum pulang.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-slate-800/80 bg-slate-950/80 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© <span id="year-text">2026</span> Kelas XII TKJ C — Teknik Komputer & Jaringan</p>
+            <p class="flex items-center gap-1">
+                <span>Dibuat dengan</span>
+                <i class="fa-solid fa-heart text-red-500 text-xs"></i>
+                <span>untuk kebersihan bersama</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Schedule Data Structure
+        const scheduleData = [
+            {
+                day: "SENIN",
+                dayCode: 1, // 1 = Monday
+                icon: "fa-bolt",
+                color: "from-cyan-500 to-blue-600",
+                members: [
+                    "Muhammad Zakwan Syafiq",
+                    "Amos Danang Jaya Nabunome",
+                    "Rifqi Ridwanulloh Wijaya",
+                    "Farden Muhamad Firdaus",
+                    "Muhammad Bayhaqi Putra Purnomo",
+                    "Yasir Ramadhani Ferara"
+                ]
+            },
+            {
+                day: "SELASA",
+                dayCode: 2, // 2 = Tuesday
+                icon: "fa-fire",
+                color: "from-blue-500 to-indigo-600",
+                members: [
+                    "Meilisa Yuki Rahayu",
+                    "Sultan Badiuz Suhatman",
+                    "Alfian Ardiansyah",
+                    "Raka Ramdan Abdillah",
+                    "Fazli Nugraha",
+                    "Fahreza Akbar Aulia"
+                ]
+            },
+            {
+                day: "RABU",
+                dayCode: 3, // 3 = Wednesday
+                icon: "fa-gem",
+                color: "from-emerald-500 to-teal-600",
+                members: [
+                    "Raffa Putra Pratama",
+                    "Abdi Putra Fannyansyah",
+                    "Muhammad Andhika Razan",
+                    "Zaydan Arkan",
+                    "Airell Avrilaruna Candrana",
+                    "Mochamad Pascal Dwadji"
+                ]
+            },
+            {
+                day: "KAMIS",
+                dayCode: 4, // 4 = Thursday
+                icon: "fa-shield-halved",
+                color: "from-amber-500 to-orange-600",
+                members: [
+                    "Dimas Ihsan Kamil",
+                    "Nizar Rais Al Hakim",
+                    "Hafiz Abdul Hakim",
+                    "Muhammad Al Fahrezi",
+                    "Sultan Bahauddin Naqsyabandy",
+                    "Rasya Nur Alif"
+                ]
+            },
+            {
+                day: "JUMAT",
+                dayCode: 5, // 5 = Friday
+                icon: "fa-star",
+                color: "from-purple-500 to-pink-600",
+                members: [
+                    "Medyo Dwi Putra",
+                    "Fathin Soeryo Anggoro Nugroho",
+                    "Naisilla Mutiara Suci",
+                    "Gilang Putra Pratama",
+                    "Azmi Hail",
+                    "Syahdhan Ibnu Ishak",
+                    "Muhamad Arvin Maisan"
+                ]
+            }
+        ];
+
+        // Storage Key
+        const STORAGE_KEY = "tkj_c_piket_status_v1";
+
+        // Global State
+        let currentFilter = 'ALL';
+        let searchQuery = '';
+        let checkedState = {};
+
+        // Day Mapping
+        const dayNamesIndo = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+        const monthNamesIndo = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+
+        // Init App
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStorage();
+            updateTimeAndDate();
+            setInterval(updateTimeAndDate, 1000);
+            renderSchedule();
+        });
+
+        // Load LocalStorage
+        function loadStorage() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    checkedState = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("Gagal membaca LocalStorage:", e);
+                checkedState = {};
+            }
+        }
+
+        // Save LocalStorage
+        function saveStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedState));
+            } catch (e) {
+                console.error("Gagal menyimpan ke LocalStorage:", e);
+            }
+        }
+
+        // Clock & Date Logic
+        function updateTimeAndDate() {
+            const now = new Date();
+            const dayIdx = now.getDay();
+            const dateNum = now.getDate();
+            const monthIdx = now.getMonth();
+            const yearNum = now.getFullYear();
+
+            const timeStr = now.toLocaleTimeString('id-ID', { hour12: false }) + ' WIB';
+            const dateStr = `${dayNamesIndo[dayIdx]}, ${dateNum} ${monthNamesIndo[monthIdx]} ${yearNum}`;
+
+            document.getElementById('current-date-text').textContent = dateStr;
+            document.getElementById('current-time-text').textContent = timeStr;
+            document.getElementById('year-text').textContent = yearNum;
+
+            // Determine today string
+            const todayName = dayNamesIndo[dayIdx];
+            const isWeekday = dayIdx >= 1 && dayIdx <= 5;
+
+            const todayNameDisplay = document.getElementById('today-name-display');
+            if (isWeekday) {
+                todayNameDisplay.textContent = `Hari ${todayName}`;
+            } else {
+                todayNameDisplay.textContent = `Akhir Pekan (Libur)`;
+            }
+
+            updateTodayProgress(todayName);
+        }
+
+        // Toggle Member Piket Checkbox
+        function toggleCheck(day, index) {
+            const key = `${day}_${index}`;
+            checkedState[key] = !checkedState[key];
+            saveStorage();
+            renderSchedule();
+            
+            const now = new Date();
+            const todayName = dayNamesIndo[now.getDay()];
+            updateTodayProgress(todayName);
+        }
+
+        // Reset Today's Checkmarks
+        function resetTodayTasks() {
+            const now = new Date();
+            const todayIdx = now.getDay();
+            
+            if (todayIdx < 1 || todayIdx > 5) {
+                alert("Hari ini libur/akhir pekan!");
+                return;
+            }
+
+            const todayData = scheduleData.find(d => d.dayCode === todayIdx);
+            if (todayData) {
+                todayData.members.forEach((_, idx) => {
+                    const key = `${todayData.day}_${idx}`;
+                    checkedState[key] = false;
+                });
+                saveStorage();
+                renderSchedule();
+                updateTodayProgress(todayNamesIndo[todayIdx]);
+            }
+        }
+
+        // Update Today Header Progress Text
+        function updateTodayProgress(todayName) {
+            const todayData = scheduleData.find(d => d.day === todayName);
+            const progressText = document.getElementById('today-progress-text');
+
+            if (!todayData) {
+                progressText.textContent = "Tidak ada jadwal piket hari ini";
+                return;
+            }
+
+            const total = todayData.members.length;
+            let done = 0;
+
+            todayData.members.forEach((_, idx) => {
+                const key = `${todayData.day}_${idx}`;
+                if (checkedState[key]) done++;
+            });
+
+            const percent = Math.round((done / total) * 100);
+            progressText.textContent = `${done}/${total} Selesai (${percent}%)`;
+        }
+
+        // Filter Function
+        function filterDay(day) {
+            currentFilter = day;
+            
+            // Update Active Tab UI
+            document.querySelectorAll('.day-tab').forEach(btn => {
+                btn.className = "day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800";
+            });
+
+            const activeBtn = document.getElementById(`tab-${day}`);
+            if (activeBtn) {
+                activeBtn.className = "day-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20";
+            }
+
+            renderSchedule();
+        }
+
+        // Search Handler
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            renderSchedule();
+        }
+
+        // Render Schedule Function
+        function renderSchedule() {
+            const grid = document.getElementById('schedule-grid');
+            grid.innerHTML = '';
+
+            const now = new Date();
+            const currentDayCode = now.getDay(); // 1 = Senin, 5 = Jumat
+
+            let visibleDays = scheduleData;
+            if (currentFilter !== 'ALL') {
+                visibleDays = scheduleData.filter(d => d.day === currentFilter);
+            }
+
+            let matchesCount = 0;
+
+            visibleDays.forEach(dayGroup => {
+                // Check search filter for members
+                const filteredMembers = dayGroup.members.map((member, index) => ({
+                    name: member,
+                    originalIndex: index,
+                    key: `${dayGroup.day}_${index}`
+                })).filter(item => {
+                    if (!searchQuery) return true;
+                    return item.name.toLowerCase().includes(searchQuery);
+                });
+
+                if (filteredMembers.length === 0 && searchQuery !== '') {
+                    return; // Skip rendering empty day when searching
+                }
+
+                matchesCount++;
+
+                const isToday = (dayGroup.dayCode === currentDayCode);
+                
+                // Calculate progress
+                const totalMembers = dayGroup.members.length;
+                let doneCount = 0;
+                dayGroup.members.forEach((_, idx) => {
+                    if (checkedState[`${dayGroup.day}_${idx}`]) doneCount++;
+                });
+                const percentage = Math.round((doneCount / totalMembers) * 100);
+
+                // Create Card Element
+                const card = document.createElement('div');
+                card.className = `glass-card rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${
+                    isToday 
+                        ? 'border-cyan-500/60 ring-1 ring-cyan-500/40 shadow-lg shadow-cyan-500/10' 
+                        : 'border-slate-800 hover:border-slate-700'
+                }`;
+
+                let cardHeaderHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr ${dayGroup.color} flex items-center justify-center text-white text-sm shadow-md">
+                                    <i class="fa-solid ${dayGroup.icon}"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-lg text-white tracking-wide">${dayGroup.day}</h3>
+                                    <span class="text-[11px] text-slate-400 font-medium">${totalMembers} Anggota</span>
+                                </div>
+                            </div>
+                            ${isToday ? `
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 tracking-wider flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                                    HARI INI
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center text-xs mb-1 font-medium">
+                                <span class="text-slate-400">Progres Tugas</span>
+                                <span class="text-cyan-400 font-semibold">${doneCount}/${totalMembers} (${percentage}%)</span>
+                            </div>
+                            <div class="w-full bg-slate-800/80 rounded-full h-2 overflow-hidden p-0.5 border border-slate-700/50">
+                                <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Member List -->
+                        <div class="space-y-2 mt-2">
+                `;
+
+                let membersListHTML = '';
+                filteredMembers.forEach((item) => {
+                    const isChecked = !!checkedState[item.key];
+                    membersListHTML += `
+                        <div onclick="toggleCheck('${dayGroup.day}', ${item.originalIndex})" 
+                            class="group flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer ${
+                                isChecked 
+                                    ? 'bg-slate-900/40 border-emerald-500/30 text-slate-400' 
+                                    : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800 text-slate-200'
+                            }">
+                            <div class="flex items-center gap-3 pr-2 min-w-0">
+                                <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0 ${
+                                    isChecked 
+                                        ? 'bg-emerald-500 border-emerald-500 text-slate-950' 
+                                        : 'border-slate-600 group-hover:border-cyan-400 bg-slate-800/50'
+                                }">
+                                    ${isChecked ? '<i class="fa-solid fa-check text-xs font-bold"></i>' : ''}
+                                </div>
+                                <span class="text-xs sm:text-sm font-medium truncate ${isChecked ? 'line-through text-slate-500' : ''}">
+                                    ${item.name}
+                                </span>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md shrink-0 ${
+                                isChecked 
+                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                                    : 'bg-slate-800 text-slate-400 border border-slate-700/50'
+                            }">
+                                ${isChecked ? 'Selesai' : 'Belum'}
+                            </span>
+                        </div>
+                    `;
+                });
+
+                let cardFooterHTML = `
+                        </div>
+                    </div>
+                `;
+
+                card.innerHTML = cardHeaderHTML + membersListHTML + cardFooterHTML;
+                grid.appendChild(card);
+            });
+
+            // If No Search Results Found
+            if (matchesCount === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500 glass-card rounded-2xl">
+                        <i class="fa-solid fa-user-slash text-4xl mb-3 text-slate-600"></i>
+                        <p class="text-sm font-medium text-slate-300">Nama "${searchQuery}" tidak ditemukan.</p>
+                        <p class="text-xs text-slate-500 mt-1">Coba gunakan kata kunci pencarian yang lain.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
